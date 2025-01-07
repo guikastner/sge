@@ -1,9 +1,8 @@
-import json
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from ai.models import AIResult
+import json
 from . import metrics
-
 
 @login_required(login_url='login')
 def home(request):
@@ -13,7 +12,10 @@ def home(request):
     graphic_product_brand_metric = metrics.get_graphic_product_brand_metric()
     daily_sales_data = metrics.get_daily_sales_data()
     daily_sales_quantity_data = metrics.get_daily_sales_quantity_data()
-    ai_result = AIResult.objects.first().result
+
+    # Tratamento para evitar erro com AIResult vazio
+    ai_result_obj = AIResult.objects.first()
+    ai_result = ai_result_obj.result if ai_result_obj else "Nenhum resultado disponível."
 
     context = {
         'product_metrics': product_metrics,
